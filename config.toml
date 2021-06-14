@@ -87,15 +87,19 @@ shared_buffer_size = 32 #MB
 step = 1024
 
 # Threshold for live data in the object. Objects under this threshold are
-# garbage collected.
+# garbage collected by the "threshold GC" which is trigerred by SIGUSR1. This
+# type of GC is heavy on resources and should be planned by the timer for not
+# intense times.
 live_data = 0.3
 
 # Timeout to wait before any of requests from GC thread will be served by the
 # extent map and object manager. In ms.
 idle_timeout = 200
 
-# How many seconds wait before next GC round.
-wait = 10
+# How many seconds to wait before next periodic GC round. This is related to
+# "dead GC" cleaning just dead objects. It very light on resources and does not
+# contend for the extent map like the "threshold GC".
+wait = 60
 
 # Configuration specific to the logger.
 [log]

@@ -56,9 +56,9 @@ type Config struct {
 
 	GC struct {
 		Step          int64   `toml:"step" env:"BS3_GC_STEP" env-description:"Step for traversing the extent map for living extents. In blocks." env-default:"1024"`
-		LiveData      float64 `toml:"live_data" env:"BS3_GC_LIVEDATA" env-description:"Live data ratio threshold." env-default:"0.3"`
+		LiveData      float64 `toml:"live_data" env:"BS3_GC_LIVEDATA" env-description:"Live data ratio threshold for threshold GC. This is for the threshold GC which is triggered by the user or systemd timer." env-default:"0.3"`
 		IdleTimeoutMs int64   `toml:"idle_timeout" env:"BS3_GC_IDLETIMEOUT" env-description:"Idle timeout for running GC requests. In ms." env-default:"200"`
-		Wait          int64   `toml:"wait" env:"BS3_GC_WAIT" env-description:"How many seconds wait before next GC round." env-default:"10"`
+		Wait          int64   `toml:"wait" env:"BS3_GC_WAIT" env-description:"How many seconds wait before next dead GC round. This just for cleaning dead objects with minimal performance impact." env-default:"60"`
 	} `toml:"gc"`
 
 	Log struct {
