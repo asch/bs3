@@ -31,6 +31,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
+	"syscall"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -43,7 +44,7 @@ import (
 
 // Parse configuration from file and environment variables, creates a
 // BuseReadWriter and creates new buse device with it. The device is ran until
-// it is signaled by SIGINT to gracefully finish.
+// it is signaled by SIGINT or SIGTERM to gracefully finish.
 func main() {
 	err := config.Configure()
 	if err != nil {
@@ -81,7 +82,7 @@ func main() {
 
 	log.Info().Msgf("BUSE device %d registered!", config.Cfg.Major)
 
-	registerSigintHandler(buse)
+	registerSigHandlers(buse)
 
 	buse.Run()
 
@@ -101,10 +102,11 @@ func getBuseReadWriter(wantNullDevice bool) (buse.BuseReadWriter, error) {
 	return bs3, err
 }
 
-// Register handler for graceful stop when sigint came in.
-func registerSigintHandler(buse buse.Buse) {
+// Register handler for graceful stop when SIGINT or SIGTERM came in.
+func registerSigHandlers(buse buse.Buse) {
 	stopChan := make(chan os.Signal, 1)
 	signal.Notify(stopChan, os.Interrupt)
+	signal.Notify(stopChan, syscall.SIGTERM)
 	go func() {
 		<-stopChan
 		log.Info().Msgf("Received interrupt, stopping buse%d device!", config.Cfg.Major)
