@@ -1,0 +1,13 @@
+# Copyright (C) 2021 Vojtech Aschenbrenner <v@asch.cz>
+
+[Unit]
+Description=Block device in s3
+After=local-fs.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=bs3
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
