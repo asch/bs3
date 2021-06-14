@@ -42,11 +42,12 @@ type S3 struct {
 // Options to use in New() function due to high number of parameters. There is
 // lower chance of ordering mistake with named parameters.
 type Options struct {
-	Remote   string
-	Region   string
-	Profile  string
-	Bucket   string
-	PartSize int64
+	Remote    string
+	Region    string
+	Bucket    string
+	AccessKey string
+	SecretKey string
+	PartSize  int64
 }
 
 // Helper struct used for tuning the http connection.
@@ -158,7 +159,7 @@ func New(o Options) (*S3, error) {
 	sess, err := session.NewSession(&aws.Config{
 		Endpoint:                      aws.String(o.Remote),
 		Region:                        aws.String(o.Region),
-		Credentials:                   credentials.NewSharedCredentials("", o.Profile),
+		Credentials:                   credentials.NewStaticCredentials(o.AccessKey, o.SecretKey, ""),
 		S3ForcePathStyle:              aws.Bool(true),
 		S3DisableContentMD5Validation: aws.Bool(true),
 		HTTPClient:                    httpClient,

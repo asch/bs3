@@ -60,7 +60,8 @@ type Config struct {
 		Bucket      string `toml:"bucket" env:"BS3_S3_BUCKET" env-description:"S3 Bucket name." env-default:"bs3"`
 		Remote      string `toml:"remote" env:"BS3_S3_REMOTE" env-description:"S3 Remote address. Empty string for AWS S3 endpoint." env-default:""`
 		Region      string `toml:"region" env:"BS3_S3_REGION" env-description:"S3 Region." env-default:"us-east-1"`
-		Profile     string `toml:"profile" env:"BS3_S3_PROFILE" env-description:"S3 Profile." env-default:"bs3"`
+		AccessKey   string `toml:"access_key" env:"BS3_S3_ACCESSKEY" env-description:"S3 Access Key." env-default:""`
+		SecretKey   string `toml:"secret_key" env:"BS3_S3_SECRETKEY" env-description:"S3 Secret Key." env-default:""`
 		Uploaders   int    `toml:"uploaders" env:"BS3_S3_UPLOADERS" env-description:"S3 Max number of uploader threads." env-default:"16"`
 		Downloaders int    `toml:"downloaders" env:"BS3_S3_DOWNLOADERS" env-description:"S3 Max number of downloader threads." env-default:"16"`
 	} `toml:"s3"`

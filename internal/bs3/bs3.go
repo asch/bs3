@@ -79,10 +79,11 @@ type bs3 struct {
 // protocol and sectormap as an extent map.
 func NewWithDefaults() (*bs3, error) {
 	s3Handler, err := s3.New(s3.Options{
-		Remote:  config.Cfg.S3.Remote,
-		Region:  config.Cfg.S3.Region,
-		Profile: config.Cfg.S3.Profile,
-		Bucket:  config.Cfg.S3.Bucket,
+		Remote:    config.Cfg.S3.Remote,
+		Region:    config.Cfg.S3.Region,
+		AccessKey: config.Cfg.S3.AccessKey,
+		SecretKey: config.Cfg.S3.SecretKey,
+		Bucket:    config.Cfg.S3.Bucket,
 	})
 
 	if err != nil {

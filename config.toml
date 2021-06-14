@@ -88,8 +88,11 @@ pretty = true
 
 # Configuration related to AWS S3
 [s3]
-# Profile in ~/.aws/{config,credentials} to get configuration from.
-profile = "bs3"
+# AWS Access Key
+access_key = "Server-Access-Key"
+
+# AWS Secret Key
+secret_key = "Server-Secret-Key"
 
 # Bucket where to store objects.
 bucket = "bs3"
