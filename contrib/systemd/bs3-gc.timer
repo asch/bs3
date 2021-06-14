@@ -1,0 +1,10 @@
+# Copyright (C) 2021 Vojtech Aschenbrenner <v@asch.cz>
+
+[Unit]
+Description=Run threshold GC for block device in s3 every week
+
+[Timer]
+OnCalendar=weekly
+
+[Install]
+WantedBy=multi-user.target

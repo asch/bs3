@@ -1,0 +1,8 @@
+# Copyright (C) 2021 Vojtech Aschenbrenner <v@asch.cz>
+
+[Unit]
+Description=Run threshold GC for block device in s3
+
+[Service]
+Type=simple
+ExecStart=pkill -USR1 -f 'bs3 -c /etc/bs3/config.toml'
