@@ -33,6 +33,16 @@ type Config struct {
 	Scheduler  bool  `toml:"scheduler" env:"BS3_SCHEDULER" env-default:"false" env-description:"Use block layer scheduler."`
 	QueueDepth int   `toml:"queue_depth" env:"BS3_QUEUEDEPTH" env-default:"128" env-description:"Device IO queue depth."`
 
+	S3 struct {
+		Bucket      string `toml:"bucket" env:"BS3_S3_BUCKET" env-description:"S3 Bucket name." env-default:"bs3"`
+		Remote      string `toml:"remote" env:"BS3_S3_REMOTE" env-description:"S3 Remote address. Empty string for AWS S3 endpoint." env-default:""`
+		Region      string `toml:"region" env:"BS3_S3_REGION" env-description:"S3 Region." env-default:"us-east-1"`
+		AccessKey   string `toml:"access_key" env:"BS3_S3_ACCESSKEY" env-description:"S3 Access Key." env-default:""`
+		SecretKey   string `toml:"secret_key" env:"BS3_S3_SECRETKEY" env-description:"S3 Secret Key." env-default:""`
+		Uploaders   int    `toml:"uploaders" env:"BS3_S3_UPLOADERS" env-description:"S3 Max number of uploader threads." env-default:"16"`
+		Downloaders int    `toml:"downloaders" env:"BS3_S3_DOWNLOADERS" env-description:"S3 Max number of downloader threads." env-default:"16"`
+	} `toml:"s3"`
+
 	Write struct {
 		Durable       bool `toml:"durable" env:"BS3_WRITE_DURABLE" env-description:"Flush semantics. True means durable, false means barrier only." env-default:"false"`
 		BufSize       int  `toml:"shared_buffer_size" env:"BS3_WRITE_BUFSIZE" env-description:"Write shared memory size in MB." env-default:"32"`
@@ -55,16 +65,6 @@ type Config struct {
 		Level  int  `toml:"level" env:"BS3_LOG_LEVEL" env-description:"Log level." env-default:"-1"`
 		Pretty bool `toml:"pretty" env:"BS3_LOG_PRETTY" env-description:"Pretty logging." env-default:"true"`
 	} `toml:"log"`
-
-	S3 struct {
-		Bucket      string `toml:"bucket" env:"BS3_S3_BUCKET" env-description:"S3 Bucket name." env-default:"bs3"`
-		Remote      string `toml:"remote" env:"BS3_S3_REMOTE" env-description:"S3 Remote address. Empty string for AWS S3 endpoint." env-default:""`
-		Region      string `toml:"region" env:"BS3_S3_REGION" env-description:"S3 Region." env-default:"us-east-1"`
-		AccessKey   string `toml:"access_key" env:"BS3_S3_ACCESSKEY" env-description:"S3 Access Key." env-default:""`
-		SecretKey   string `toml:"secret_key" env:"BS3_S3_SECRETKEY" env-description:"S3 Secret Key." env-default:""`
-		Uploaders   int    `toml:"uploaders" env:"BS3_S3_UPLOADERS" env-description:"S3 Max number of uploader threads." env-default:"16"`
-		Downloaders int    `toml:"downloaders" env:"BS3_S3_DOWNLOADERS" env-description:"S3 Max number of downloader threads." env-default:"16"`
-	} `toml:"s3"`
 
 	SkipCheckpoint bool `toml:"skip_checkpoint" env:"BS3_SKIP" env-description:"Skip restoring from and creating checkpoint." env-default:"false"`
 	Profiler       bool `toml:"profiler" env:"BS3_PROFILER" env-description:"Enable golang web profiler." env-default:"false"`

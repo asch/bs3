@@ -32,6 +32,27 @@ profiler = false
 # Profiler port.
 profiler_port = 6060
 
+# Configuration related to AWS S3
+[s3]
+# AWS Access Key
+access_key = "Server-Access-Key"
+
+# AWS Secret Key
+secret_key = "Server-Secret-Key"
+
+# Bucket where to store objects.
+bucket = "bs3"
+
+# <protocol>://<ip>:<port> of the S3 backend. AWS S3 endpoint is used when empty string.
+remote = ""
+
+# Region to use.
+region = "us-east-1"
+
+# Max number of threads to spawn for uploads and downloads.
+uploaders = 384
+downloaders = 384
+
 # Configuration specific to write path.
 [write]
 # Semantics of the flush request. True means durable device, i.e. flush request
@@ -85,24 +106,3 @@ level = -1
 # Pretty print means nicer log output for human but much slower than non-pretty
 # json output.
 pretty = true
-
-# Configuration related to AWS S3
-[s3]
-# AWS Access Key
-access_key = "Server-Access-Key"
-
-# AWS Secret Key
-secret_key = "Server-Secret-Key"
-
-# Bucket where to store objects.
-bucket = "bs3"
-
-# <protocol>://<ip>:<port> of the S3 backend. AWS S3 endpoint is used when empty string.
-remote = ""
-
-# Region to use.
-region = "us-east-1"
-
-# Max number of threads to spawn for uploads and downloads.
-uploaders = 384
-downloaders = 384
