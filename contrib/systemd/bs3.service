@@ -6,7 +6,7 @@ After=local-fs.target network-online.target
 
 [Service]
 Type=simple
-ExecStart=bs3
+ExecStart=bs3 -c /etc/bs3/config.toml
 KillMode=mixed
 
 [Install]
