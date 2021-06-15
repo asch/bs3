@@ -128,15 +128,9 @@ func (b *bs3) registerSigUSR1Handler() {
 
 	go func() {
 		for range gcChan {
-			log.Info().
-				Int64("GC Step", config.Cfg.GC.Step).
-				Float64("GC Threshold", config.Cfg.GC.LiveData).
-				Msg("Starting threshold garbage collection")
-
+			log.Info().Msgf("Threshold GC started with threshold %1.2f.", config.Cfg.GC.LiveData)
 			b.gcThreshold(config.Cfg.GC.Step, config.Cfg.GC.LiveData)
-
-			log.Info().
-				Msg("Threshold garbage collection finished!")
+			log.Info().Msg("Threshold GC finished.")
 		}
 	}()
 }
@@ -144,8 +138,11 @@ func (b *bs3) registerSigUSR1Handler() {
 // Dead GC infinite loop. Highly efficient hence running regularly.
 func (b *bs3) gcDead() {
 	for {
-		log.Info().Msg("Running dead garbage collection!")
+		log.Trace().Msg("Dead GC started.")
+
 		b.removeNonReferencedDeadObjects()
+
+		log.Trace().Msg("Dead GC finished.")
 		time.Sleep(time.Duration(config.Cfg.GC.Wait) * time.Second)
 	}
 }

@@ -53,7 +53,11 @@ func main() {
 
 	loggerSetup(config.Cfg.Log.Pretty, config.Cfg.Log.Level)
 
+	log.Info().Msgf("Configuration for block device buse%d loaded from %s",
+		config.Cfg.Major, config.Cfg.ConfigPath)
+
 	if config.Cfg.Profiler {
+		log.Info().Msg("Running profiler.")
 		runProfiler(config.Cfg.ProfilerPort)
 	}
 
@@ -79,15 +83,15 @@ func main() {
 	if err != nil {
 		log.Panic().Msg(err.Error())
 	}
-
-	log.Info().Msgf("BUSE device %d registered!", config.Cfg.Major)
+	log.Info().Msgf("Block device buse%d registered.", config.Cfg.Major)
 
 	registerSigHandlers(buse)
 
 	buse.Run()
+	log.Info().Msgf("Block device buse%d stopped.", config.Cfg.Major)
 
-	log.Info().Msgf("Removing buse%d", config.Cfg.Major)
 	buse.RemoveDevice()
+	log.Info().Msgf("Block device buse%d removed.", config.Cfg.Major)
 }
 
 // Return null device if user wants it, otherwise returns bs3 device, which is
@@ -109,7 +113,7 @@ func registerSigHandlers(buse buse.Buse) {
 	signal.Notify(stopChan, syscall.SIGTERM)
 	go func() {
 		<-stopChan
-		log.Info().Msgf("Received interrupt, stopping buse%d device!", config.Cfg.Major)
+		log.Info().Msg("Stopping bs3 device.")
 		buse.StopDevice()
 	}()
 }

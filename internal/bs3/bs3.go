@@ -255,11 +255,14 @@ func (b *bs3) objectPiecesRefCounterDec(objectPieces []mapproxy.ObjectPart) {
 func (b *bs3) restoreFromCheckpoint() {
 	mapSize, err := b.objectStoreProxy.Instance.GetObjectSize(checkpointKey)
 	if err == nil {
+		log.Info().Msg("Checkpoint found. Recovery process started.")
+
 		compressedMap := make([]byte, mapSize)
 		b.objectStoreProxy.Download(checkpointKey, compressedMap, 0, false)
 		newKey := b.extentMapProxy.Instance.DeserializeAndReturnNextKey(compressedMap)
 		key.Replace(newKey)
-		log.Info().Int64("key after checkpoint", key.Current()).Send()
+
+		log.Info().Msgf("Recovery process finished. Last recovered object key is %d.", newKey)
 	}
 }
 
@@ -268,6 +271,7 @@ func (b *bs3) restoreFromCheckpoint() {
 // missing object is found. This is the point where prefix consistency is
 // corrupted and we cannot recover more. Any successive objects are deleted.
 func (b *bs3) restoreFromObjects() {
+	log.Info().Msg("Looking for objects outside of checkpoint.")
 	for ; ; key.Next() {
 		header := make([]byte, b.metadata_size)
 		size, err := b.objectStoreProxy.Instance.GetObjectSize(key.Current())
@@ -305,7 +309,7 @@ func (b *bs3) restoreFromObjects() {
 		dataBegin := int64(b.metadata_size / config.Cfg.BlockSize)
 		b.extentMapProxy.Update(extents, dataBegin, key.Current())
 	}
-	log.Info().Int64("key after roll forward", key.Current()).Send()
+	log.Info().Msgf("Lookup done. Last recovered object key is %d.", key.Current())
 }
 
 // Restores map from saved checkpoint and then continuous in restoration from
@@ -320,8 +324,13 @@ func (b *bs3) restore() {
 
 // Serializes extent map and upload it to the backend.
 func (b *bs3) checkpoint() {
+	log.Info().Msg("Serialization of extent map started.")
 	dump := b.extentMapProxy.Instance.Serialize()
+	log.Info().Msg("Serialization of extent map finished.")
+
+	log.Info().Msg("Upload of extent map started.")
 	b.objectStoreProxy.Upload(checkpointKey, dump, false)
+	log.Info().Msg("Upload of extent map finished.")
 }
 
 // Parses write extent information from 32 bytes of raw memory. The memory is
