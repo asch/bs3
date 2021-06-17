@@ -255,14 +255,14 @@ func (b *bs3) objectPiecesRefCounterDec(objectPieces []mapproxy.ObjectPart) {
 func (b *bs3) restoreFromCheckpoint() {
 	mapSize, err := b.objectStoreProxy.Instance.GetObjectSize(checkpointKey)
 	if err == nil {
-		log.Info().Msg("Checkpoint found. Recovery process started.")
+		log.Info().Msg("  Checkpoint found. Checkpoint recovery started.")
 
 		compressedMap := make([]byte, mapSize)
 		b.objectStoreProxy.Download(checkpointKey, compressedMap, 0, false)
 		newKey := b.extentMapProxy.Instance.DeserializeAndReturnNextKey(compressedMap)
 		key.Replace(newKey)
 
-		log.Info().Msgf("Recovery process finished. Last recovered object key is %d.", newKey)
+		log.Info().Msgf("  Checkpoint recovery process finished. Last object from checkpoint is %d.", newKey)
 	}
 }
 
@@ -271,7 +271,9 @@ func (b *bs3) restoreFromCheckpoint() {
 // missing object is found. This is the point where prefix consistency is
 // corrupted and we cannot recover more. Any successive objects are deleted.
 func (b *bs3) restoreFromObjects() {
-	log.Info().Msg("Looking for objects outside of checkpoint.")
+	log.Info().Msg("  Looking for objects to do roll forward recovery.")
+
+	keyBefore := key.Current()
 	for ; ; key.Next() {
 		header := make([]byte, b.metadata_size)
 		size, err := b.objectStoreProxy.Instance.GetObjectSize(key.Current())
@@ -309,7 +311,12 @@ func (b *bs3) restoreFromObjects() {
 		dataBegin := int64(b.metadata_size / config.Cfg.BlockSize)
 		b.extentMapProxy.Update(extents, dataBegin, key.Current())
 	}
-	log.Info().Msgf("Lookup done. Last recovered object key is %d.", key.Current())
+
+	if keyBefore == key.Current() {
+		log.Info().Msg("  No extra objects found for roll forward recovery.")
+	} else {
+		log.Info().Msgf("  Extra %d objects for roll forward recovery found.", key.Current() - keyBefore)
+	}
 }
 
 // Restores map from saved checkpoint and then continuous in restoration from
@@ -317,20 +324,32 @@ func (b *bs3) restoreFromObjects() {
 // hence the old checkpoint is read. However there can already be uploaded new
 // set of objects fulfilling prefix consistency.
 func (b *bs3) restore() {
+	log.Info().Msgf("Checking for old volume in bucket %s.", config.Cfg.S3.Bucket)
+
 	b.restoreFromCheckpoint()
 	b.restoreFromObjects()
 	b.objectStoreProxy.Instance.DeleteKeyAndSuccessors(key.Current())
+
+	if key.Current() == 0 {
+		log.Info().Msgf("No volume found. Bucket %s is used for new volume.", config.Cfg.S3.Bucket)
+	} else {
+		log.Info().Msgf("Volume found in bucket %s. The last object is %d.", config.Cfg.S3.Bucket, key.Current())
+	}
 }
 
 // Serializes extent map and upload it to the backend.
 func (b *bs3) checkpoint() {
-	log.Info().Msg("Serialization of extent map started.")
-	dump := b.extentMapProxy.Instance.Serialize()
-	log.Info().Msg("Serialization of extent map finished.")
+	log.Info().Msg("Checkpointing started.")
 
-	log.Info().Msg("Upload of extent map started.")
+	log.Info().Msg("  Serialization of extent map started.")
+	dump := b.extentMapProxy.Instance.Serialize()
+	log.Info().Msg("  Serialization of extent map finished.")
+
+	log.Info().Msg("  Upload of extent map started.")
 	b.objectStoreProxy.Upload(checkpointKey, dump, false)
-	log.Info().Msg("Upload of extent map finished.")
+	log.Info().Msg("  Upload of extent map finished.")
+
+	log.Info().Msgf("Checkpointing finished. Last checkpointed object is %d.", key.Current())
 }
 
 // Parses write extent information from 32 bytes of raw memory. The memory is
