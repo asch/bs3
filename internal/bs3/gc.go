@@ -138,12 +138,11 @@ func (b *bs3) registerSigUSR1Handler() {
 // Dead GC infinite loop. Highly efficient hence running regularly.
 func (b *bs3) gcDead() {
 	for {
-		log.Trace().Msg("Dead GC started.")
-
-		b.removeNonReferencedDeadObjects()
-
-		log.Trace().Msg("Dead GC finished.")
 		time.Sleep(time.Duration(config.Cfg.GC.Wait) * time.Second)
+
+		log.Trace().Msg("Dead GC started.")
+		b.removeNonReferencedDeadObjects()
+		log.Trace().Msg("Dead GC finished.")
 	}
 }
 
