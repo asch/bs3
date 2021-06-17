@@ -275,7 +275,7 @@ func (m *SectorMap) DeserializeAndReturnNextKey(buf []byte) int64 {
 	decoder := gob.NewDecoder(bytes.NewReader(buf))
 	decoder.Decode(m)
 
-	var maxKey int64
+	var maxKey int64 = notMappedKey
 	for _, s := range m.Sectors {
 		if s.Key > maxKey {
 			maxKey = s.Key
