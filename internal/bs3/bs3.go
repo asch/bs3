@@ -255,14 +255,14 @@ func (b *bs3) objectPiecesRefCounterDec(objectPieces []mapproxy.ObjectPart) {
 func (b *bs3) restoreFromCheckpoint() {
 	mapSize, err := b.objectStoreProxy.Instance.GetObjectSize(checkpointKey)
 	if err == nil {
-		log.Info().Msg("  Checkpoint found. Checkpoint recovery started.")
+		log.Info().Msg("->Checkpoint found. Checkpoint recovery started.")
 
 		compressedMap := make([]byte, mapSize)
 		b.objectStoreProxy.Download(checkpointKey, compressedMap, 0, false)
 		newKey := b.extentMapProxy.Instance.DeserializeAndReturnNextKey(compressedMap)
 		key.Replace(newKey)
 
-		log.Info().Msgf("  Checkpoint recovery process finished. Last object from checkpoint is %d.", newKey)
+		log.Info().Msgf("->Checkpoint recovery process finished. Last object from checkpoint is %d.", newKey)
 	}
 }
 
@@ -271,7 +271,7 @@ func (b *bs3) restoreFromCheckpoint() {
 // missing object is found. This is the point where prefix consistency is
 // corrupted and we cannot recover more. Any successive objects are deleted.
 func (b *bs3) restoreFromObjects() {
-	log.Info().Msg("  Looking for objects to do roll forward recovery.")
+	log.Info().Msg("->Looking for objects to do roll forward recovery.")
 
 	keyBefore := key.Current()
 	for ; ; key.Next() {
@@ -313,9 +313,9 @@ func (b *bs3) restoreFromObjects() {
 	}
 
 	if keyBefore == key.Current() {
-		log.Info().Msg("  No extra objects found for roll forward recovery.")
+		log.Info().Msg("->No extra objects found for roll forward recovery.")
 	} else {
-		log.Info().Msgf("  Extra %d objects for roll forward recovery found.", key.Current() - keyBefore)
+		log.Info().Msgf("->Extra %d objects for roll forward recovery found.", key.Current() - keyBefore)
 	}
 }
 
@@ -341,13 +341,13 @@ func (b *bs3) restore() {
 func (b *bs3) checkpoint() {
 	log.Info().Msg("Checkpointing started.")
 
-	log.Info().Msg("  Serialization of extent map started.")
+	log.Info().Msg("->Serialization of extent map started.")
 	dump := b.extentMapProxy.Instance.Serialize()
-	log.Info().Msg("  Serialization of extent map finished.")
+	log.Info().Msg("->Serialization of extent map finished.")
 
-	log.Info().Msg("  Upload of extent map started.")
+	log.Info().Msg("->Upload of extent map started.")
 	b.objectStoreProxy.Upload(checkpointKey, dump, false)
-	log.Info().Msg("  Upload of extent map finished.")
+	log.Info().Msg("->Upload of extent map finished.")
 
 	log.Info().Msgf("Checkpointing finished. Last checkpointed object is %d.", key.Current())
 }
