@@ -99,7 +99,7 @@ idle_timeout = 200
 # How many seconds to wait before next periodic GC round. This is related to
 # "dead GC" cleaning just dead objects. It very light on resources and does not
 # contend for the extent map like the "threshold GC".
-wait = 60
+wait = 600
 
 # Configuration specific to the logger.
 [log]
