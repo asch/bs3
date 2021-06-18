@@ -103,7 +103,12 @@ func (b *bs3) gcThreshold(stepSize int64, threshHold float64) {
 
 	for i := range objects {
 		key := key.Next()
-		b.objectStoreProxy.Upload(key, objects[i], false)
+
+		err := b.objectStoreProxy.Upload(key, objects[i], false)
+		if err != nil {
+			log.Info().Err(err).Send()
+		}
+
 		b.extentMapProxy.Update(extents[i], int64(b.metadata_size/config.Cfg.BlockSize), key)
 	}
 }
@@ -116,7 +121,10 @@ func (b *bs3) removeNonReferencedDeadObjects() {
 	deadObjects := b.extentMapProxy.DeadObjects()
 	b.filterDownloadingObjects(deadObjects)
 	for k := range deadObjects {
-		b.objectStoreProxy.Upload(k, []byte{}, false)
+		err := b.objectStoreProxy.Upload(k, []byte{}, false)
+		if err != nil {
+			log.Info().Err(err).Send()
+		}
 	}
 	b.extentMapProxy.DeleteDeadObjects(deadObjects)
 }
@@ -195,7 +203,10 @@ func (b *bs3) composeObjects(writeList []mapproxy.ExtentWithObjectPart) ([][]byt
 		wg.Add(1)
 		go func(g mapproxy.ExtentWithObjectPart) {
 			defer wg.Done()
-			b.objectStoreProxy.Download(g.ObjectPart.Key, data, g.Extent.Sector*int64(config.Cfg.BlockSize), true)
+			err := b.objectStoreProxy.Download(g.ObjectPart.Key, data, g.Extent.Sector*int64(config.Cfg.BlockSize), true)
+			if err != nil {
+				log.Info().Err(err).Send()
+			}
 		}(g)
 
 		extent := mapproxy.Extent{
