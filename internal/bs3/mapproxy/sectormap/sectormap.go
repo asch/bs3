@@ -270,10 +270,33 @@ func (m *SectorMap) Serialize() []byte {
 // restored map and structures representing object utilization and dead
 // objects. During deserialization all sequential numbers are zeroed because
 // most they are not needed and most probably BUSE starts from 0 since it was
-// restarted.
+// restarted. The map supports device size change.
 func (m *SectorMap) DeserializeAndReturnNextKey(buf []byte) int64 {
+	// Size of the allocated map
+	intendedSize := len(m.Sectors)
+
+	// 1) In case of smaller checkpointed map, i.e. we enlarged the device,
+	//    the map would be shrinked and we need to resize it to its
+	//    intended size.
+	// 2) In case of larger checkpointed map, i.e. we shrinked the device,
+	//    the map would be enlarged and we need to resize it to its inteded size.
 	decoder := gob.NewDecoder(bytes.NewReader(buf))
 	decoder.Decode(m)
+
+	if intendedSize < len(m.Sectors) {
+		// Create new map with smaller size and copy the intended range
+		// to it. Then replace the the map. We could just change the
+		// len of the map, but then the memory would be still occupied
+		// like in the case of larger map.
+		sectors := make([]SectorMetadata, intendedSize)
+		copy(sectors, m.Sectors)
+		m.Sectors = sectors
+	} else {
+		// We already have allocated large map, but we decoded smaller
+		// one and it the len was set according to the decoded
+		// (smaller) map. We just change len to its full size.
+		m.Sectors = m.Sectors[:cap(m.Sectors)]
+	}
 
 	var maxKey int64 = notMappedKey
 	for _, s := range m.Sectors {
