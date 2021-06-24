@@ -20,4 +20,4 @@ tidy:
 	go mod tidy
 
 clean:
-	rm bs3
+	rm -f bs3
