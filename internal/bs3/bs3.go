@@ -151,14 +151,23 @@ func (b *bs3) BuseWrite(writes int64, chunk []byte) error {
 	dataSize := writtenTotalBlocks * uint64(config.Cfg.BlockSize)
 	object := chunk[:uint64(b.metadata_size)+dataSize]
 
-	err := b.objectStoreProxy.Upload(key, object, true)
-	if err != nil {
+	// Some s3 backends, like minio just drops connection when they are
+	// under load. Hence the loop with exponential backoff till the
+	// operation succeeds. There is no point to return error, since the
+	// best thing we can do is to try infinitely and print a message to
+	// log.
+	for i := 1; ; i *= 2 {
+		err := b.objectStoreProxy.Upload(key, object, true)
+		if err == nil {
+			break
+		}
 		log.Info().Err(err).Send()
+		time.Sleep(time.Duration(i) * time.Second)
 	}
 
 	b.extentMapProxy.Update(extents, int64(b.metadata_size/config.Cfg.BlockSize), key)
 
-	return err
+	return nil
 }
 
 // Download part of the object to the memory buffer chunk. The part is
@@ -167,9 +176,18 @@ func (b *bs3) BuseWrite(writes int64, chunk []byte) error {
 func (b *bs3) downloadObjectPart(part mapproxy.ObjectPart, chunk []byte, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	err := b.objectStoreProxy.Download(part.Key, chunk, part.Sector*int64(config.Cfg.BlockSize), true)
-	if err != nil {
+	// Some s3 backends, like minio just drops connection when they are
+	// under load. Hence the loop with exponential backoff till the
+	// operation succeeds. There is no point to return error, since the
+	// best thing we can do is to try infinitely and print a message to
+	// log.
+	for i := 1; ; i *= 2 {
+		err := b.objectStoreProxy.Download(part.Key, chunk, part.Sector*int64(config.Cfg.BlockSize), true)
+		if err == nil {
+			break
+		}
 		log.Info().Err(err).Send()
+		time.Sleep(time.Duration(i) * time.Second)
 	}
 }
 
