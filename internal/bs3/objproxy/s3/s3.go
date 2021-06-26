@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -26,7 +25,12 @@ const (
 	// this differently, hence the constant. If you want to change it, keep
 	// in mind that we rely on the continuous space of keys for prefix
 	// consistecy as well as in the GC process.
-	keyFmt = "%016x"
+	//
+	// Furthermore we split the key into halves and use the lower half of
+	// bits as s3 prefix and upper half for the object key. This is to
+	// prevent s3 rate limiting which is applied to objects with the same
+	// prefix.
+	keyFmt = "%08x/%08x"
 )
 
 // Implementation of ObjectUploadDownloaderAt using AWS S3 as a backend.
@@ -90,7 +94,7 @@ func newHTTPClientWithSettings(httpSettings httpClientSettings) *http.Client {
 func (s *S3) Upload(key int64, buf []byte) error {
 	_, err := s.uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(s.bucket),
-		Key:    aws.String(fmt.Sprintf(keyFmt, key)),
+		Key:    aws.String(encode(key)),
 		Body:   bytes.NewReader(buf),
 	})
 
@@ -101,7 +105,7 @@ func (s *S3) Upload(key int64, buf []byte) error {
 func (s *S3) GetObjectSize(key int64) (int64, error) {
 	head, err := s.client.HeadObject(&s3.HeadObjectInput{
 		Bucket: aws.String(s.bucket),
-		Key:    aws.String(fmt.Sprintf(keyFmt, key)),
+		Key:    aws.String(encode(key)),
 	})
 
 	var size int64
@@ -120,7 +124,7 @@ func (s *S3) DownloadAt(key int64, buf []byte, offset int64) error {
 
 	_, err := s.downloader.Download(b, &s3.GetObjectInput{
 		Bucket: aws.String(s.bucket),
-		Key:    aws.String(fmt.Sprintf(keyFmt, key)),
+		Key:    aws.String(encode(key)),
 		Range:  &rng,
 	})
 
@@ -131,7 +135,7 @@ func (s *S3) DownloadAt(key int64, buf []byte, offset int64) error {
 func (s *S3) Delete(key int64) error {
 	_, err := s.client.DeleteObject(&s3.DeleteObjectInput{
 		Bucket: aws.String(s.bucket),
-		Key:    aws.String(fmt.Sprintf(keyFmt, key)),
+		Key:    aws.String(encode(key)),
 	})
 
 	return err
@@ -213,7 +217,7 @@ func (s *S3) DeleteKeyAndSuccessors(fromKey int64) error {
 		Bucket: aws.String(s.bucket),
 	}, func(page *s3.ListObjectsV2Output, last bool) bool {
 		for _, o := range page.Contents {
-			key, _ := strconv.ParseInt(*o.Key, 16, 64)
+			key := decode(*o.Key)
 			if key >= fromKey {
 				s.Delete(key)
 			}
@@ -222,4 +226,24 @@ func (s *S3) DeleteKeyAndSuccessors(fromKey int64) error {
 	})
 
 	return err
+}
+
+// We split the key into halves and use the lower half of bits as s3 prefix and
+// upper half for the object key. This is to prevent s3 rate limiting which is
+// applied to objects with the same prefix.
+func encode(key int64) string {
+	left := (key >> 32) & 0xffffffff
+	right := key & 0xffffffff
+
+	return fmt.Sprintf(keyFmt, right, left)
+}
+
+// The inverse to encode()
+func decode(keyWithPrefix string) int64 {
+	var prefix, key int64
+	fmt.Sscanf(keyWithPrefix, keyFmt, &prefix, &key)
+
+	k := (key << 32) + prefix
+
+	return k
 }
