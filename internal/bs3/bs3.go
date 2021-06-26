@@ -315,7 +315,7 @@ func (b *bs3) restoreFromObjects() {
 	if keyBefore == key.Current() {
 		log.Info().Msg("->No extra objects found for roll forward recovery.")
 	} else {
-		log.Info().Msgf("->Extra %d objects for roll forward recovery found.", key.Current() - keyBefore)
+		log.Info().Msgf("->Extra %d objects for roll forward recovery found.", key.Current()-keyBefore)
 	}
 }
 
