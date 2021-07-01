@@ -4,3 +4,10 @@
 
 * GNU Make
 * Go 1.16 or newer
+
+## Installation
+
+```bash
+make
+sudo make install
+```
