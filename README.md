@@ -2,6 +2,7 @@
 
 ## Requirements
 
+* BUSE
 * GNU Make
 * Go 1.16 or newer
 
@@ -10,4 +11,14 @@
 ```bash
 make
 sudo make install
+```
+
+## Usage
+
+```bash
+# Edit /etc/bs3/config.toml first
+
+systemctl start bs3
+systemctl status bs3
+systemctl stop bs3
 ```
