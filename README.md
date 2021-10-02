@@ -1,5 +1,9 @@
 # BS3: Block Device in S3
 
+## Write Performance Comparison
+
+<p align="center"> <img src="./bs3.png"> </p>
+
 ## Requirements
 
 * BUSE
@@ -8,14 +12,14 @@
 
 ## Installation
 
-```bash
+```
 make
 sudo make install
 ```
 
 ## Usage
 
-```bash
+```
 # Edit /etc/bs3/config.toml first
 
 systemctl start bs3
