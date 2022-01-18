@@ -1,18 +1,20 @@
-# Specify the major of the corresponding buse device you want to configure and
-# connect to. E.g. 0 if you want to work with /dev/buse0.
+ Specify the major of the corresponding buse device you
+# want to configure and connect to. E.g. 0 if you want to
+# work with /dev/buse0.
 major = 0
 
-# Number of user-space daemon threads which is also a maximal number of queues
-# storage stack uses. This is limited to the number of CPUs. I.e. minimal value
-# is 1 and maximal is number of CPUs. Optimally it should be set to the number
-# of CPUs. 0 means optimal value.
+# Number of user-space daemon threads which is also a
+# maximal number of queues storage stack uses. This is
+# limited to the number of CPUs. I.e. minimal value is 1 and
+# maximal is number of CPUs. Optimally it should be set to
+# the number of CPUs. 0 means optimal value.
 threads = 0
 
 # Size of the created block device in GB.
 size = 8 #GB
 
-# Block size of created device. 512 or 4096. It is forbidden to change
-# block_size on the existent block device. In B.
+# Block size of created device. 512 or 4096. It is forbidden
+# to change block_size on the existent block device. In B.
 block_size = 4096 #B
 
 # Whether IOs should be scheduled by linux kernel stack.
@@ -21,12 +23,11 @@ scheduler = false
 # IO queue depth for created block device.
 queue_depth = 256
 
-# Use null backend, i.e. just immediately acknowledge reads and writes and drop
-# them. Useful for testing raw BUSE performance. Otherwise useless because all
-# data are lost.
-null = false
+# Backend selection. "s3" | "null" | "nbd"
+backend = "s3"
 
-# Enable web-based go pprof profiler for performance profiling.
+# Enable web-based go pprof profiler for performance
+# profiling.
 profiler = false
 
 # Profiler port.
@@ -43,8 +44,9 @@ secret_key = "Server-Secret-Key"
 # Bucket where to store objects.
 bucket = "bs3"
 
-# <protocol>://<ip>:<port> of the S3 backend. AWS S3 endpoint is used when empty string.
-remote = ""
+# <protocol>://<ip>:<port> of the S3 backend. AWS S3
+# endpoint is used when empty string.
+remote = "http://192.168.122.1:9000"
 
 # Region to use.
 region = "us-east-1"
@@ -55,30 +57,34 @@ downloaders = 384
 
 # Configuration specific to write path.
 [write]
-# Semantics of the flush request. True means durable device, i.e. flush request
-# gets acknowledge when data are persisted on the backend. False means
-# eventually durable, i.e. flush request just a barrier.
+# Semantics of the flush request. True means durable device,
+# i.e. flush request gets acknowledge when data are
+# persisted on the backend. False means eventually durable,
+# i.e. flush request just a barrier.
 durable = false
 
-# Size of the shared memory between kernel and user space for data being
-# written. The size is per one thread. In MB.
+# Size of the shared memory between kernel and user space
+# for data being written. The size is per one thread. In MB.
 shared_buffer_size = 32 #MB
 
-# Size of the chunk. Chunk is the smallest piece which can be sent to the user
-# space and where all writes are stored. In MB.
+# Size of the chunk. Chunk is the smallest piece which can
+# be sent to the user space and where all writes are stored.
+# In MB.
 chunk_size = 4 #MB
 
-# The whole address space is divided into collision domains. Every collision
-# domain has its own counter for writes' sequential numbers. This is useful
-# when we don't want to have one shared counter for writes. Instead we split it
-# into parts and save the cache coherency protocol traffic. In MB.
+# The whole address space is divided into collision domains.
+# Every collision domain has its own counter for writes'
+# sequential numbers. This is useful when we don't want to
+# have one shared counter for writes. Instead we split it
+# into parts and save the cache coherency protocol traffic.
+# In MB.
 collision_chunk_size = 1 #MB
 
 # Configuration specific to read path.
 [read]
 
-# Size of the shared memory between kernel and user space for data being read.
-# The size is per one thread. In MB.
+# Size of the shared memory between kernel and user space
+# for data being read. The size is per one thread. In MB.
 shared_buffer_size = 32 #MB
 
 # Garbage Collection related configuration
@@ -86,27 +92,30 @@ shared_buffer_size = 32 #MB
 # Step when scanning the extent map. In blocks.
 step = 1024
 
-# Threshold for live data in the object. Objects under this threshold are
-# garbage collected by the "threshold GC" which is trigerred by SIGUSR1. This
-# type of GC is heavy on resources and should be planned by the timer for not
+# Threshold for live data in the object. Objects under this
+# threshold are garbage collected by the "threshold GC"
+# which is trigerred by SIGUSR1. This type of GC is heavy on
+# resources and should be planned by the timer for not
 # intense times.
 live_data = 0.3
 
-# Timeout to wait before any of requests from GC thread will be served by the
-# extent map and object manager. In ms.
+# Timeout to wait before any of requests from GC thread will
+# be served by the extent map and object manager. In ms.
 idle_timeout = 200
 
-# How many seconds to wait before next periodic GC round. This is related to
-# "dead GC" cleaning just dead objects. It very light on resources and does not
-# contend for the extent map like the "threshold GC".
+# How many seconds to wait before next periodic GC round.
+# This is related to "dead GC" cleaning just dead objects.
+# It very light on resources and does not contend for the
+# extent map like the "threshold GC".
 wait = 600
 
 # Configuration specific to the logger.
 [log]
-# Minimal level of logged messages. Following levels are provided:
-# panic 5, fatal 4, error 3, warn 2, info 1, debug 0, trace -1
+# Minimal level of logged messages. Following levels are
+# provided: panic 5, fatal 4, error 3, warn 2, info 1, debug
+# 0, trace -1
 level = -1
 
-# Pretty print means nicer log output for human but much slower than non-pretty
-# json output.
+# Pretty print means nicer log output for human but much
+# slower than non-pretty json output.
 pretty = true

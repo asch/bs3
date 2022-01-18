@@ -10,7 +10,7 @@ bs3: $(SOURCES)
 
 install: bs3 $(SYSTEMD_UNITS)
 	install -D bs3 /usr/local/bin/bs3
-	install -D -m 600 config.toml /etc/bs3/config.toml
+	#install -D -m 600 config.toml /etc/bs3/config.toml
 	install -D -m 644 $(SYSTEMD_CONTRIB_PATH)/bs3.service $(SYSTEMD_PATH)/bs3.service
 	install -D -m 644 $(SYSTEMD_CONTRIB_PATH)/bs3-gc.service $(SYSTEMD_PATH)/bs3-gc.service
 	install -D -m 644 $(SYSTEMD_CONTRIB_PATH)/bs3-gc.timer $(SYSTEMD_PATH)/bs3-gc.timer

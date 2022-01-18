@@ -38,6 +38,7 @@ import (
 
 	"github.com/asch/bs3/internal/bs3"
 	"github.com/asch/bs3/internal/config"
+	"github.com/asch/bs3/internal/nbd"
 	"github.com/asch/bs3/internal/null"
 	"github.com/asch/buse/lib/go/buse"
 )
@@ -61,7 +62,7 @@ func main() {
 		runProfiler(config.Cfg.ProfilerPort)
 	}
 
-	buseReadWriter, err := getBuseReadWriter(config.Cfg.Null)
+	buseReadWriter, err := getBuseReadWriter(config.Cfg.Backend)
 	if err != nil {
 		log.Panic().Err(err).Send()
 	}
@@ -96,14 +97,19 @@ func main() {
 
 // Return null device if user wants it, otherwise returns bs3 device, which is
 // default.
-func getBuseReadWriter(wantNullDevice bool) (buse.BuseReadWriter, error) {
-	if wantNullDevice {
+func getBuseReadWriter(backend string) (buse.BuseReadWriter, error) {
+	switch backend {
+	case "null":
 		return null.NewNull(), nil
+	case "nbd":
+		return nbd.NewNbd(), nil
+	case "s3":
+		return bs3.NewWithDefaults()
+	default:
+		panic("")
 	}
 
-	bs3, err := bs3.NewWithDefaults()
-
-	return bs3, err
+	return nil, nil
 }
 
 // Register handler for graceful stop when SIGINT or SIGTERM came in.
