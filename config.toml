@@ -1,4 +1,4 @@
- Specify the major of the corresponding buse device you
+# Specify the major of the corresponding buse device you
 # want to configure and connect to. E.g. 0 if you want to
 # work with /dev/buse0.
 major = 0
