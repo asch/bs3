@@ -71,6 +71,8 @@ func main() {
 		WriteChunkSize: int64(config.Cfg.Write.ChunkSize),
 		BlockSize:      int64(config.Cfg.BlockSize),
 		Threads:        int(config.Cfg.Threads),
+		FirstQueue:     int(config.Cfg.FirstQueue),
+		QueuesPerNode:  int(config.Cfg.QueuesPerNode),
 		Major:          int64(config.Cfg.Major),
 		WriteShmSize:   int64(config.Cfg.Write.BufSize),
 		ReadShmSize:    int64(config.Cfg.Read.BufSize),

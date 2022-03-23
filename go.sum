@@ -1,7 +1,7 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/asch/buse/lib/go/buse v0.0.0-20210613113039-eca88af516b2 h1:LrcBSKGkGyLwRkBV9KRoA1kCDrYi1MIais2jcPso7M4=
-github.com/asch/buse/lib/go/buse v0.0.0-20210613113039-eca88af516b2/go.mod h1:dxWl+7wjthiJ2JB8vNGTMy1FW7W8o2khYiGnYitxgms=
+github.com/asch/buse/lib/go/buse v0.0.0-20220323192857-b8172bf3684f h1:5m9CgNqJlHcGduVLFd8BEXPNQf+Unm5tNF46/ZC4YXs=
+github.com/asch/buse/lib/go/buse v0.0.0-20220323192857-b8172bf3684f/go.mod h1:dxWl+7wjthiJ2JB8vNGTMy1FW7W8o2khYiGnYitxgms=
 github.com/aws/aws-sdk-go v1.38.60 h1:MgyEsX0IMwivwth1VwEnesBpH0vxbjp5a0w1lurMOXY=
 github.com/aws/aws-sdk-go v1.38.60/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=
