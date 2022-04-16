@@ -78,6 +78,7 @@ func main() {
 		CollisionArea:  int64(config.Cfg.Write.CollisionSize),
 		QueueDepth:     int64(config.Cfg.QueueDepth),
 		Scheduler:      config.Cfg.Scheduler,
+		CPUsPerNode:    config.Cfg.CPUsPerNode,
 	})
 
 	if err != nil {

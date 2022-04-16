@@ -25,13 +25,14 @@ var Cfg Config
 type Config struct {
 	ConfigPath string
 
-	Null       bool  `toml:"null" env:"BS3_NULL" env-default:"false" env-description:"Use null backend, i.e. immediate acknowledge to read or write. For testing BUSE raw performance."`
-	Major      int   `toml:"major" env:"BS3_MAJOR" env-default:"0" env-description:"Device major. Decimal part of /dev/buse%d."`
-	Threads    int   `toml:"threads" env:"BS3_THREADS" env-default:"0" env-description:"Number of user-space threads for serving queues."`
-	Size       int64 `toml:"size" env:"BS3_SIZE" env-default:"8" env-description:"Device size in GB."`
-	BlockSize  int   `toml:"block_size" env:"BS3_BLOCKSIZE" env-default:"4096" env-description:"Block size."`
-	Scheduler  bool  `toml:"scheduler" env:"BS3_SCHEDULER" env-default:"false" env-description:"Use block layer scheduler."`
-	QueueDepth int   `toml:"queue_depth" env:"BS3_QUEUEDEPTH" env-default:"128" env-description:"Device IO queue depth."`
+	Null        bool  `toml:"null" env:"BS3_NULL" env-default:"false" env-description:"Use null backend, i.e. immediate acknowledge to read or write. For testing BUSE raw performance."`
+	Major       int   `toml:"major" env:"BS3_MAJOR" env-default:"0" env-description:"Device major. Decimal part of /dev/buse%d."`
+	Threads     int   `toml:"threads" env:"BS3_THREADS" env-default:"0" env-description:"Number of user-space threads for serving queues."`
+	CPUsPerNode int   `toml:"cpus_per_node" env:"BS3_CPUS_PER_NODE" env-default:"0" env-description:"Number of CPUs per one numa node."`
+	Size        int64 `toml:"size" env:"BS3_SIZE" env-default:"8" env-description:"Device size in GB."`
+	BlockSize   int   `toml:"block_size" env:"BS3_BLOCKSIZE" env-default:"4096" env-description:"Block size."`
+	Scheduler   bool  `toml:"scheduler" env:"BS3_SCHEDULER" env-default:"false" env-description:"Use block layer scheduler."`
+	QueueDepth  int   `toml:"queue_depth" env:"BS3_QUEUEDEPTH" env-default:"128" env-description:"Device IO queue depth."`
 
 	S3 struct {
 		Bucket      string `toml:"bucket" env:"BS3_S3_BUCKET" env-description:"S3 Bucket name." env-default:"bs3"`
