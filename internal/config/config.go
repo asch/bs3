@@ -31,6 +31,7 @@ type Config struct {
 	CPUsPerNode int   `toml:"cpus_per_node" env:"BS3_CPUS_PER_NODE" env-default:"0" env-description:"Number of CPUs per one numa node."`
 	Size        int64 `toml:"size" env:"BS3_SIZE" env-default:"8" env-description:"Device size in GB."`
 	BlockSize   int   `toml:"block_size" env:"BS3_BLOCKSIZE" env-default:"4096" env-description:"Block size."`
+	IOMin       int   `toml:"io_min" env:"BS3_IO_MIN" env-default:"0" env-description:"Minimal IO."`
 	Scheduler   bool  `toml:"scheduler" env:"BS3_SCHEDULER" env-default:"false" env-description:"Use block layer scheduler."`
 	QueueDepth  int   `toml:"queue_depth" env:"BS3_QUEUEDEPTH" env-default:"128" env-description:"Device IO queue depth."`
 
@@ -100,6 +101,10 @@ func parse() error {
 
 	if Cfg.BlockSize != 512 {
 		Cfg.BlockSize = 4096
+	}
+
+	if Cfg.IOMin == 0 {
+		Cfg.IOMin = Cfg.BlockSize
 	}
 
 	return nil

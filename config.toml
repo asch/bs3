@@ -15,6 +15,10 @@ size = 8 #GB
 # block_size on the existent block device. In B.
 block_size = 4096 #B
 
+# Minimal IO size in Bytes. Useful for userspace raid configuration working
+# with chunks larger than block size. E.g. mdraid uses 512KB chunks size.
+io_min = 0
+
 # Whether IOs should be scheduled by linux kernel stack.
 scheduler = false
 

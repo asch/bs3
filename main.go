@@ -70,6 +70,7 @@ func main() {
 		Durable:        config.Cfg.Write.Durable,
 		WriteChunkSize: int64(config.Cfg.Write.ChunkSize),
 		BlockSize:      int64(config.Cfg.BlockSize),
+		IOMin:          int64(config.Cfg.IOMin),
 		Threads:        int(config.Cfg.Threads),
 		Major:          int64(config.Cfg.Major),
 		WriteShmSize:   int64(config.Cfg.Write.BufSize),
