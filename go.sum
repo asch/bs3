@@ -1,5 +1,7 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/asch/buse/lib/go/buse v0.0.0-20220419090641-f12ccb1d15a9 h1:suBdWCu2BxNxC6YETUuFnYanAnffGtBBQ060v3rO4/A=
+github.com/asch/buse/lib/go/buse v0.0.0-20220419090641-f12ccb1d15a9/go.mod h1:dxWl+7wjthiJ2JB8vNGTMy1FW7W8o2khYiGnYitxgms=
 github.com/aws/aws-sdk-go v1.38.60 h1:MgyEsX0IMwivwth1VwEnesBpH0vxbjp5a0w1lurMOXY=
 github.com/aws/aws-sdk-go v1.38.60/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=

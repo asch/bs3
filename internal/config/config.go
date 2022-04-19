@@ -32,6 +32,7 @@ type Config struct {
 	Size        int64 `toml:"size" env:"BS3_SIZE" env-default:"8" env-description:"Device size in GB."`
 	BlockSize   int   `toml:"block_size" env:"BS3_BLOCKSIZE" env-default:"4096" env-description:"Block size."`
 	IOMin       int   `toml:"io_min" env:"BS3_IO_MIN" env-default:"0" env-description:"Minimal IO."`
+	IOOpt       int   `toml:"io_opt" env:"BS3_IO_OPT" env-default:"0" env-description:"Optimal IO."`
 	Scheduler   bool  `toml:"scheduler" env:"BS3_SCHEDULER" env-default:"false" env-description:"Use block layer scheduler."`
 	QueueDepth  int   `toml:"queue_depth" env:"BS3_QUEUEDEPTH" env-default:"128" env-description:"Device IO queue depth."`
 
@@ -105,6 +106,10 @@ func parse() error {
 
 	if Cfg.IOMin == 0 {
 		Cfg.IOMin = Cfg.BlockSize
+	}
+
+	if Cfg.IOOpt == 0 {
+		Cfg.IOOpt = Cfg.BlockSize
 	}
 
 	return nil

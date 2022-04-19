@@ -19,6 +19,10 @@ block_size = 4096 #B
 # with chunks larger than block size. E.g. mdraid uses 512KB chunks size.
 io_min = 0
 
+# Optimal IO size in Bytes. Useful for userspace raid configuration working
+# with chunks larger than block size. E.g. mdraid uses 512KB chunks size.
+io_opt = 0
+
 # Whether IOs should be scheduled by linux kernel stack.
 scheduler = false
 

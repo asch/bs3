@@ -3,7 +3,7 @@ module github.com/asch/bs3
 go 1.16
 
 require (
-	github.com/asch/buse/lib/go/buse v0.0.0-20220417113543-264acb77f66f
+	github.com/asch/buse/lib/go/buse v0.0.0-20220419090641-f12ccb1d15a9
 	github.com/aws/aws-sdk-go v1.38.60
 	github.com/ilyakaznacheev/cleanenv v1.2.5
 	github.com/rs/zerolog v1.22.0
